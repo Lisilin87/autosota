@@ -43,8 +43,8 @@ evaluation:
   metric_parse_timeout_sec: 60
 
 llm:
-  provider: "openai"
-  model: "gpt-4"
+  provider: "qwen"
+  model: "glm-5"
   temperature: 0.7
   max_tokens: 2000
   timeout_sec: 120

@@ -40,6 +40,14 @@ class LLMClient:
             if not api_key:
                 raise AutoSOTAError("OPENAI_API_KEY not set")
             self.client = OpenAI(api_key=api_key, base_url=api_base, timeout=timeout)
+        elif provider == "qwen":
+            api_key = api_key or os.getenv("QWEN_API_KEY")
+            api_base = api_base or os.getenv(
+                "QWEN_API_BASE", "https://coding-intl.dashscope.aliyuncs.com/v1"
+            )
+            if not api_key:
+                raise AutoSOTAError("QWEN_API_KEY not set")
+            self.client = OpenAI(api_key=api_key, base_url=api_base, timeout=timeout)
         elif provider == "anthropic":
             api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
             if not api_key:
@@ -57,7 +65,7 @@ class LLMClient:
     ) -> str:
         """Send chat completion request."""
         try:
-            if self.provider == "openai":
+            if self.provider == "openai" or self.provider == "qwen":
                 return self._chat_openai(messages, system_prompt, response_format)
             elif self.provider == "anthropic":
                 return self._chat_anthropic(messages, system_prompt)

@@ -32,7 +32,7 @@ The system consists of 8 core agents:
 
 ```bash
 # Clone the repository
-git clone https://github.com/autosota/autosota.git
+git clone https://github.com/Lisilin87/autosota.git
 cd autosota
 
 # Install dependencies
@@ -40,6 +40,34 @@ pip install -e .
 
 # Install development dependencies
 pip install -e ".[dev]"
+```
+
+## Configuration
+
+### Using Qwen API (阿里云通义千问)
+
+The system supports Qwen API from Alibaba Cloud. Configure your `.env` file:
+
+```bash
+# Copy example env file
+cp .env.example .env
+
+# Edit .env with your Qwen API credentials
+QWEN_API_KEY=your_qwen_api_key_here
+QWEN_API_BASE=https://coding-intl.dashscope.aliyuncs.com/v1
+LLM_PROVIDER=qwen
+LLM_MODEL=glm-5
+```
+
+### Using OpenAI API
+
+Alternatively, you can use OpenAI API:
+
+```bash
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_API_BASE=https://api.openai.com/v1
+LLM_PROVIDER=openai
+LLM_MODEL=gpt-4
 ```
 
 ## Usage
