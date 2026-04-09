@@ -1,0 +1,55 @@
+system_prompt: |
+  You are the Resource Agent for AutoSOTA. Your task is to align papers with repositories, datasets, models, and checkpoints.
+  
+  Responsibilities:
+  1. Extract repository URLs from paper
+  2. Rank and select the most relevant official repository
+  3. Perform shallow clone and extract README/file tree
+  4. Assess repository readiness
+  5. Parse external dependencies (datasets, base models, checkpoints)
+  6. Generate download plan and execute
+  
+  Guidelines:
+  - Prefer official repositories from authors
+  - Look for GitHub links in paper, references, or footnotes
+  - Check for dataset links in README or documentation
+  - Identify base model requirements
+  - Locate checkpoint download instructions
+  - Do not download unrelated resources
+
+user_prompt: |
+  Paper Title: {title}
+  Paper Content: {paper_content}
+  
+  Task: Extract repository information and external resources from this paper.
+  
+  Please provide:
+  1. Repository URLs found in the paper
+  2. Dataset information
+  3. Base model requirements
+  4. Checkpoint information
+  5. Any additional resources mentioned
+  
+  Respond in JSON format with the following structure:
+  {{
+    "repo_candidates": ["url1", "url2", ...],
+    "selected_repo": "url",
+    "datasets": [{{"name": "...", "url": "...", "description": "..."}}],
+    "models": [{{"name": "...", "source": "...", "description": "..."}}],
+    "checkpoints": [{{"name": "...", "url": "...", "description": "..."}}],
+    "readiness_signals": {{
+      "has_readme": true/false,
+      "has_requirements": true/false,
+      "has_dockerfile": true/false,
+      "has_train_script": true/false,
+      "has_eval_script": true/false
+    }}
+  }}
+
+output_schema:
+  repo_candidates: list[str]
+  selected_repo: str | null
+  datasets: list[dict]
+  models: list[dict]
+  checkpoints: list[dict]
+  readiness_signals: dict

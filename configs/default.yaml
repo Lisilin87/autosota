@@ -1,0 +1,57 @@
+workspace_root: ./workspaces
+max_iterations: 8
+
+monitor:
+  stuck_timeout_sec: 1200
+  repeated_error_threshold: 3
+  log_check_interval_sec: 10
+
+scheduler:
+  max_parallel_tasks: 2
+  checkpoint_interval_sec: 60
+  recovery_enabled: true
+
+docker:
+  enabled: true
+  base_image: "pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime"
+  gpu_enabled: true
+  memory_limit: "16g"
+  shm_size: "8g"
+  timeout_sec: 3600
+
+resource:
+  shallow_clone: true
+  max_download_gb: 50
+  repo_search_timeout_sec: 300
+  readiness_check_enabled: true
+
+objective:
+  rubric_max_depth: 3
+  rubric_weight_threshold: 0.1
+  primary_metric_required: true
+  secondary_metrics_required: true
+
+supervisor:
+  redline_policy: configs/policies/redlines.yaml
+  strict_mode: true
+  audit_all_ideas: true
+
+evaluation:
+  primary_metric_required: true
+  secondary_metrics_required: true
+  baseline_required: true
+  metric_parse_timeout_sec: 60
+
+llm:
+  provider: "openai"
+  model: "gpt-4"
+  temperature: 0.7
+  max_tokens: 2000
+  timeout_sec: 120
+  max_retries: 3
+
+logging:
+  level: "INFO"
+  format: "json"
+  file_enabled: true
+  console_enabled: true
