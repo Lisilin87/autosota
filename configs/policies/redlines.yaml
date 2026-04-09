@@ -1,0 +1,82 @@
+redlines:
+  R1:
+    name: "Evaluation Parameters Fixed"
+    description: "Evaluation parameters (e.g., k in recall@k, history window, context window) must not be modified."
+    severity: "critical"
+    check_type: "code_diff"
+    patterns:
+      - "recall@"
+      - "history_window"
+      - "context_window"
+      - "max_length"
+  
+  R2:
+    name: "Evaluation Scripts Immutable"
+    description: "Evaluation scripts, score aggregation, and metric computation must not be modified."
+    severity: "critical"
+    check_type: "file_access"
+    protected_files:
+      - "*eval*.py"
+      - "*metric*.py"
+      - "*test*.py"
+  
+  R3:
+    name: "Real Model Predictions"
+    description: "Predictions must come from real model inference, not hard-coded values."
+    severity: "critical"
+    check_type: "code_pattern"
+    forbidden_patterns:
+      - "hardcoded"
+      - "fake.*prediction"
+      - "mock.*result"
+  
+  R4:
+    name: "Metric Balance"
+    description: "Primary metric improvement must not come at the cost of significant degradation in other key metrics."
+    severity: "high"
+    check_type: "metric_comparison"
+    threshold: 0.05
+  
+  R5:
+    name: "No Test Set Leakage"
+    description: "Test set information must not be introduced into training."
+    severity: "critical"
+    check_type: "data_flow"
+    restricted_paths:
+      - "test"
+      - "val"
+      - "validation"
+  
+  R6:
+    name: "Dataset Distribution Unchanged"
+    description: "Dataset distribution must not be modified (no filtering, resampling, or relabeling)."
+    severity: "high"
+    check_type: "data_manipulation"
+    protected_operations:
+      - "filter"
+      - "resample"
+      - "relabel"
+      - "subset"
+  
+  R7:
+    name: "Paper-Specific Constraints"
+    description: "Paper-specific constraints must be explicitly listed in code_analysis.md."
+    severity: "high"
+    check_type: "documentation"
+    required_section: "Hard Constraints / Red Lines"
+
+audit_levels:
+  - level: "pre_idea"
+    checks: ["R1", "R2", "R3", "R7"]
+  
+  - level: "post_idea"
+    checks: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"]
+  
+  - level: "final"
+    checks: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"]
+
+enforcement:
+  mode: "strict"
+  violation_action: "reject"
+  warning_action: "log"
+  allow_override: false

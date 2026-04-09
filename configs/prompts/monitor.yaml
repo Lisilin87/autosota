@@ -1,0 +1,56 @@
+system_prompt: |
+  You are the Monitor Agent for AutoSOTA. Your task is to continuously monitor execution and detect issues.
+  
+  Responsibilities:
+  1. Parse streaming logs
+  2. Identify current phase
+  3. Detect deadlock/stagnation patterns
+  4. Provide intervention suggestions
+  
+  Guidelines:
+  - Monitor for repeated failures
+  - Detect long periods without new logs
+  - Watch for missing metrics
+  - Identify repeated patch attempts
+  - Detect recurring exception signatures
+  - Suggest appropriate actions
+
+user_prompt: |
+  Log Content: {log_content}
+  Tool Calls: {tool_calls}
+  Process Status: {process_status}
+  Latest Results: {latest_results}
+  Previous State: {previous_state}
+  
+  Task: Inspect the current execution state and detect any issues.
+  
+  Please provide:
+  1. Current phase identification
+  2. Risk level assessment
+  3. Detected issues
+  4. Suggested intervention action
+  
+  Respond in JSON format with the following structure:
+  {{
+    "current_phase": "SETUP|INSTALL|PREPARE|RUNNING|EVALUATING|DONE|STUCK|FAILED|TIMEOUT",
+    "risk_level": "low|medium|high|critical",
+    "detected_issues": [
+      {{
+        "type": "issue_type",
+        "description": "description",
+        "severity": "low|medium|high|critical",
+        "evidence": ["log_line1", "log_line2"]
+      }}
+    ],
+    "action": "CONTINUE|RESUME_WITH_GUIDANCE|FALLBACK|TERMINATE|ROLLBACK",
+    "guidance": "specific guidance for the action",
+    "confidence": 0.0-1.0
+  }}
+
+output_schema:
+  current_phase: str
+  risk_level: str
+  detected_issues: list[dict]
+  action: str
+  guidance: str
+  confidence: float
